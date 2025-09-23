@@ -27,8 +27,16 @@ app.app_context()
 @app.route('/')
 async def index():
     if await security.admin_user_exists():
-        if 'id' in session:
-            return render_template('index.jinja')
+        if 'id' in session and session['role'] == 'Admin':
+            page = request.args.get("page", 1, type=int)
+            users = db.session.query(User).paginate(page=page, per_page=5)
+
+            return render_template(
+                'index.jinja',
+                users=users,
+                session=session
+            )
+
         else:
             return redirect(url_for('login'))
     else:
@@ -60,7 +68,6 @@ async def start():
                     'start.jinja', 
                     error_msg=error_msg
                 )
-    
     else:
         return redurect(url_for('index'))
 
@@ -91,6 +98,26 @@ async def login():
                     error_msg=error_msg
                 )
 
+    else:
+        return redirect(url_for('index'))
+
+
+@app.route('/user/create', methods=['POST'])
+async def create_user():
+    if 'id' in session and session['role'] == 'Admin':
+        username = request.form['username']
+        passwd = request.form['passwd']
+        passwd_confirm = request.form['passwd_confirm']
+
+        if passwd == passwd_confirm:
+            passwd = await security.encrypt_passwd(passwd)
+            user = User(username, passwd, 'User', False, False)
+            db.session.add(user)
+            db.session.commit()
+
+            return redirect(url_for('index'))
+        else:
+            return redirect(url_for('index'))
     else:
         return redirect(url_for('index'))
 
