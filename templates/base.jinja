@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>{%block title%} {%endblock%}</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.22/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css" rel="stylesheet" type="text/css" />
+    <style>
+        .logo {
+            border-radius: 50%;
+            width: 50px;
+        }
+        html {
+            background-image: url(/static/img/fondo.png);
+        }
+    </style>
+</head>
+<body>
+    <header 
+        style="
+            background-image: url(/static/img/fondoverde.jpg);
+            background-position: center;    
+        " class="mainmenu navbar p-2 shadow-sm">
+        <div class="flex-1">
+            <a href="{{url_for('index')}}"><img class="logo" src="/static/img/logo.png" with="20"></a>
+        </div>
+        <div class="flex-none">
+
+        </div>
+    </header>
+    <main class="container mx-auto my-4">
+        {%block content%} {%endblock%}
+    </main>
+</body>
+</html>
