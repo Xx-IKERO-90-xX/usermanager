@@ -100,7 +100,7 @@ async def login():
     else:
         return redirect(url_for('index'))
 
-
+# Ruta para crear un usuario
 @app.route('/user/create', methods=['POST'])
 async def create_user():
     if 'id' in session and session['role'] == 'Admin':
@@ -120,6 +120,7 @@ async def create_user():
     else:
         return redirect(url_for('index'))
 
+# Ruta para borrar un usuario
 @app.route('/user/delete/<int:id>', methods=['GET'])
 async def delete_user(id):
     if 'id' in session and session['role'] == 'Admin':
@@ -134,6 +135,7 @@ async def delete_user(id):
     else:
         return redirect(url_for('index'))
 
+# Ruta para editar los permisos de un usuario
 @app.route('/user/permission/edit/<int:id>', methods=['POST'])
 async def edit_user_permissions(id):
     if 'id' in session and session['role'] == 'Admin':
@@ -152,6 +154,25 @@ async def edit_user_permissions(id):
     else:
         return redirect(url_for('index'))
 
+# Ruta para dar una nueva contraseña a un usuario
+@app.route('/user/new/password/<int:id>', methods=['POST'])
+async def new_user_password(id):
+    if 'id' in session and session['role'] == 'Admin':
+        passwd = request.form.get('passwd')
+        passwd_confirm = request.form.get('passwd_confirm')
+
+        if passwd == passwd_confirm:
+            user = db.session.query(User).filter(User.id == id).first()
+            passwd = await security.encrypt_passwd(passwd)
+
+            user.passwd = passwd
+            db.session.commit()
+
+            return redirect(url_for('index'))
+        else:
+            return redirect(url_for('index'))
+    else:
+        return redirect(url_for('index'))
 
 if __name__ == '__main__':
     with app.app_context():
