@@ -1,0 +1,17 @@
+version: "3.9"
+services:
+  user_manager:
+    build: .
+    image: user_manager
+    ports:
+      - "5002:5002"
+    
+    volumes:
+      - .:/usr/src/app
+    networks:
+      mc-block-net:
+        ipv4_address: 172.90.0.30
+
+networks:
+  mc-block-net:
+    external: true
