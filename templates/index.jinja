@@ -55,30 +55,30 @@
                     <form method="dialog">
                         <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
                     </form>
-                    <form method="post">
+                    <form action="{{url_for('edit_user_permissions', id=user.id)}}" method="post">
                         {%if user.pig%}
                         <label for="skins_pannel_toggle">
                             Acceso al panel de Skins:
-                            <input type="checkbox" id="skins_pannel_toggle" checked="checked"
+                            <input type="checkbox" id="skins_pannel_toggle" name="pig" checked="checked"
                                 class="toggle toggle-success" /><br>
                         </label>
                         {%else%}
                         <label for="skins_pannel_toggle">
                             Acceso al panel de Skins:
-                            <input type="checkbox" id="skins_pannel_toggle" class="toggle toggle-success" /><br>
+                            <input type="checkbox" id="skins_pannel_toggle" name="pig" class="toggle toggle-success" /><br>
                         </label>
                         {%endif%}
                         <br>
                         {%if user.mc_console%}
                         <label for="mc_console_toggle">
                             Acceso a la terminal remota del servidor de Minecraft:
-                            <input type="checkbox" id="mc_console_toggle" checked="checked"
+                            <input type="checkbox" id="mc_console_toggle" name="mc_console" checked="checked"
                                 class="toggle toggle-success" />
                         </label>
                         {%else%}
                         <label for="mc_console_toggle">
                             Acceso a la terminal remota del servidor de Minecraft:
-                            <input type="checkbox" id="mc_console_toggle" class="toggle toggle-success" />
+                            <input type="checkbox" id="mc_console_toggle" name="mc_console" class="toggle toggle-success" />
                         </label>
                         {%endif%}
                         <br><br>
@@ -99,7 +99,7 @@
                             <input type="password" placeholder="*************" class="input input-sm input-success" />
                             <br><br>
                             <label><strong>Confirmar Contraseña</strong></label><br>
-                            <input type="password" placeholder="**************" class="input input-sm input-success" />
+                            <input type="password" placeholder="*************" class="input input-sm input-success" />
                         </div>
                     </form>
                 </div>

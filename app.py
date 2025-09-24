@@ -31,9 +31,6 @@ async def index():
             page = request.args.get("page", 1, type=int)
             users = db.session.query(User).paginate(page=page, per_page=5)
 
-            for user in users:
-                print(user.pig)
-                print(user.mc_console)
             return render_template(
                 'index.jinja',
                 users=users,
@@ -134,6 +131,24 @@ async def delete_user(id):
             db.session.commit()
 
             return redirect(url_for('index'))
+    else:
+        return redirect(url_for('index'))
+
+@app.route('/user/permission/edit/<int:id>', methods=['POST'])
+async def edit_user_permissions(id):
+    if 'id' in session and session['role'] == 'Admin':
+        user = db.session.query(User).filter(User.id == id).first()
+        if user.username == 'Administrator':
+            return redirect(url_for('index'))
+        else:
+            pig = True if request.form.get('pig') == "on" else False
+            mc_console = True if request.form.get('mc_console') == "on" else False
+
+            user.pig = pig
+            user.mc_console = mc_console
+            db.session.commit()
+
+            return redirect(url_for('index'))            
     else:
         return redirect(url_for('index'))
 
