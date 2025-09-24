@@ -31,12 +31,14 @@ async def index():
             page = request.args.get("page", 1, type=int)
             users = db.session.query(User).paginate(page=page, per_page=5)
 
+            for user in users:
+                print(user.pig)
+                print(user.mc_console)
             return render_template(
                 'index.jinja',
                 users=users,
                 session=session
             )
-
         else:
             return redirect(url_for('login'))
     else:
@@ -117,6 +119,20 @@ async def create_user():
 
             return redirect(url_for('index'))
         else:
+            return redirect(url_for('index'))
+    else:
+        return redirect(url_for('index'))
+
+@app.route('/user/delete/<int:id>', methods=['GET'])
+async def delete_user(id):
+    if 'id' in session and session['role'] == 'Admin':
+        user = db.session.query(User).filter(User.id == id).first()
+        if user.username == 'Administrator':
+            return redirect(url_for('index'))
+        else:
+            db.session.delete(user)
+            db.session.commit()
+
             return redirect(url_for('index'))
     else:
         return redirect(url_for('index'))
