@@ -24,18 +24,21 @@ db.init_app(app)
 app.app_context()
 
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 async def index():
     if await security.admin_user_exists():
-        if 'id' in session and session['role'] == 'Admin':
-            page = request.args.get("page", 1, type=int)
-            users = db.session.query(User).paginate(page=page, per_page=5)
+        if 'id' in session:
+            if session['role'] == 'Admin':
+                page = request.args.get("page", 1, type=int)
+                users = db.session.query(User).paginate(page=page, per_page=5)
 
-            return render_template(
-                'index.jinja',
-                users=users,
-                session=session
-            )
+                return render_template(
+                    'index.jinja',
+                    users=users,
+                    session=session
+                )
+            else:
+                return redirect(url_for('login'))
         else:
             return redirect(url_for('login'))
     else:
@@ -78,8 +81,8 @@ async def login():
             return render_template('login.jinja')
         
         else:
-            username = request.form['username']
-            passwd = request.form['passwd']
+            username = request.form.get('username')
+            passwd = request.form.get('passwd')
 
             if await security.verify_login(username, passwd):
                 user = db.session.query(User).filter(User.username == username).first()
@@ -91,14 +94,20 @@ async def login():
                 return redirect(url_for('index'))
             
             else:
-                error_msg = 'Los datos del login son incorrectos!!!'
+                error_msg = "Fallo con los datos del login!"
                 return render_template(
                     'login.jinja',
                     error_msg=error_msg
                 )
-
     else:
         return redirect(url_for('index'))
+
+# Ruta para cerrar sesión
+@app.route('/logout', methods=['GET'])
+async def logout():
+    session.clear()
+    return redirect(url_for('index'))
+    
 
 # Ruta para crear un usuario
 @app.route('/user/create', methods=['POST'])

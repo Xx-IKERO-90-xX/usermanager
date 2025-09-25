@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset='utf-8'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
@@ -14,26 +15,40 @@
             border-radius: 50%;
             width: 50px;
         }
+
         html {
             background-image: url(/static/img/fondo.png);
         }
     </style>
 </head>
+
 <body>
-    <header 
-        style="
+    <header style="
             background-image: url(/static/img/fondoverde.jpg);
             background-position: center;    
         " class="mainmenu navbar p-2 shadow-sm">
         <div class="flex-1">
             <a href="{{url_for('index')}}"><img class="logo" src="/static/img/logo.png" with="20"></a>
         </div>
-        <div class="flex-none">
-
+        {%if session%}
+        <div class="flex gap-2">
+            <div class="dropdown dropdown-end">
+                <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
+                    <div class="w-10 rounded-full">
+                        <img style="background: white;" class="bg-white-500" alt="Tailwind CSS Navbar component"
+                            src="/static/img/user.png" />
+                    </div>
+                </div>
+                <ul tabindex="0" class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
+                    <li><a href="{{url_for('logout')}}">Logout</a></li>
+                </ul>
+            </div>
         </div>
+        {%endif%}
     </header>
     <main class="container mx-auto my-4">
         {%block content%} {%endblock%}
     </main>
 </body>
+
 </html>
